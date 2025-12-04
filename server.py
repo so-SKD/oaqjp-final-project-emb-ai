@@ -24,11 +24,18 @@ def emotion_detector_route():
     # Call emotion detector function w/in given text
     result = emotion_detector(text_to_analyze)
 
+    #Check if dominant emotion is none
+    if result['dominant_emotion'] is None:
+        return "Invalid text! Please try again."
+
     # Prepare response in spec'd format
     emotions = result
-    response = f"For the given statement, the system response is 'anger': {emotions['anger']}, " \
-               f"'disgust': {emotions['disgust']}, 'fear': {emotions['fear']}, 'joy': {emotions['joy']} " \
-               f"and 'sadness': {emotions['sadness']}. The dominant emotion is {emotions['dominant_emotion']}."
+    response = (
+    f"For the given statement, the system response is 'anger': {emotions['anger']}, "
+    f"'disgust': {emotions['disgust']}, 'fear': {emotions['fear']}, "
+    f"'joy': {emotions['joy']} and 'sadness': {emotions['sadness']}. "
+    f"The dominant emotion is {emotions['dominant_emotion']}."
+)
 
     return response
 
@@ -41,3 +48,4 @@ def render_index_page():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+    

@@ -5,12 +5,38 @@ def emotion_detector(text_to_analyse):  # Define a function named emotion_detect
     """
     Function to detect emotions using Watson NLP Emotion API.
     Returns the emotions and the dominant emotion from the API response.
+    handles invalid text entries / blank output
     """
     url = 'https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict'  # URL of the emotion detection service
+    
     headers = {"grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock"}  # Set the headers required for the API request
+    
+    if not text_to_analyse.strip():
+        return {
+            'anger': None,
+            'disgust': None,
+            'fear': None,
+            'joy': None,
+            'sadness': None,
+            'dominant_emotion':None
+        }
+
     myobj = { "raw_document": { "text": text_to_analyse } }
+    
     response = requests.post(url, json = myobj, headers=headers)  # Send a POST request to the API with the text and headers
+    
+    if response.status_code == 400:
+        return {
+            'anger': None,
+            'disgust': None,
+            'fear': None,
+            'joy': None,
+            'sadness': None,
+            'dominant_emotion':None
+        }
+    
     response_dict = json.loads(response.text)
+    
     emotions = response_dict['emotionPredictions'][0]['emotion']
 
     #get indiv. emotion scores
